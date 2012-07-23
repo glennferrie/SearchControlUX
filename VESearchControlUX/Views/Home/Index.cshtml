@@ -1,0 +1,83 @@
+﻿@{
+    ViewBag.Title = "Search Control - Prototype";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style type="text/css">
+    .controlContainer { margin-left: 100px; margin-top: 50px; }
+    .SearchControl { border: 1px solid black; padding: 2px; width: 350px; }
+    .searchInputControls span { vertical-align: middle; }
+    .searchInputControls input[type="text"] { border: 1px solid black; height: 24px; width:225px; margin-top:1px; vertical-align: middle; }
+    .searchInputControls input[type="button"] { border: 1px solid black; height: 28px; margin-top: 1px; vertical-align: middle; }
+    .resultsContainer {  }
+    .searchResults {  }
+    ul { overflow: auto; max-height: 400px; }
+</style>
+<script src="../../Scripts/jquery-1.5.2.js" type="text/javascript"></script>
+<script src="../../Scripts/rx.min.js" type="text/javascript"></script>
+<script src="../../Scripts/rx.jquery.js" type="text/javascript"></script>
+<script src="../../Scripts/jQuery.tmpl.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    var sd = {
+        search: function (query) {
+            $.ajaxSetup({
+                accept: 'application/json'
+            });
+            $.ajax({
+                url: '@Url.Action("Search")',
+                type: 'POST',
+                data: { q: query, filters: ['all'] },
+                success: function (data) {
+                    sd.ui.bindResults(data);
+                }
+            });
+        },
+        ui: {
+            bindResults: function (data) {
+                $(".searchResults").empty();
+                $(data).each(function (index, el) {
+                    $(".searchResults").append("<li><div><div>" + el.Title + "</div><div>" + el.Description + "</div></div></li>");
+                });
+
+            }
+        }
+    };
+
+    $(document).ready(function () {
+        // define template
+        $.template("result1", "<li>${ Title }</li>");
+
+        // observe keyup on search control
+        var o = $("#searchQuery").keyupAsObservable();
+        o.subscribe(function (ev) {
+            var q = ev.currentTarget.value;
+            sd.search(q);
+        });
+    });
+
+
+</script>
+
+<h2>Sample Search control for V+E Intranet</h2>
+
+<div class="controlContainer">
+    <div class="SearchControl">
+        <div class="searchInputControls">
+            <span>VE Info:</span> <input type="text" id="searchQuery" /> <input type="button" value="Search" />
+        </div>
+        <div class="resultsContainer">
+            <ul class="searchResults" id="resultsList1">
+                <li>
+                    Result 1
+                </li>
+                <li>
+                    Result 2
+                </li>
+                <li>
+                    Result 3
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+

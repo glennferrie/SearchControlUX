@@ -1,0 +1,7 @@
+c:\users\glenn\desktop\VESearchControlUX\VESearchControlUX\bin\VESearchControlUX.dll
+c:\users\glenn\desktop\VESearchControlUX\VESearchControlUX\bin\VESearchControlUX.pdb
+c:\users\glenn\desktop\VESearchControlUX\VESearchControlUX\bin\EntityFramework.dll
+c:\users\glenn\desktop\VESearchControlUX\VESearchControlUX\bin\EntityFramework.xml
+c:\users\glenn\desktop\VESearchControlUX\VESearchControlUX\obj\Debug\ResolveAssemblyReference.cache
+c:\users\glenn\desktop\VESearchControlUX\VESearchControlUX\obj\Debug\VESearchControlUX.dll
+c:\users\glenn\desktop\VESearchControlUX\VESearchControlUX\obj\Debug\VESearchControlUX.pdb
