@@ -12,13 +12,26 @@
     .resultsContainer {  }
     .searchResults {  }
     ul { overflow: auto; max-height: 400px; }
+    li { list-style: none; margin-left: -26px; padding-left: 0px; }
 </style>
 <script src="../../Scripts/jquery-1.5.2.js" type="text/javascript"></script>
 <script src="../../Scripts/rx.min.js" type="text/javascript"></script>
-<script src="../../Scripts/rx.jquery.js" type="text/javascript"></script>
-<script src="../../Scripts/jQuery.tmpl.min.js" type="text/javascript"></script>
+<script src="../../Scripts/rx.time.min.js" type="text/javascript"></script>
+<script src="../../Scripts/rx.jquery.min.js" type="text/javascript"></script>
+<script src="../../Scripts/rx.html.js" type="text/javascript"></script>
+<script src="../../Scripts/knockout-2.1.0.js" type="text/javascript"></script>
+<script type="text/javascript">
+    var SearchViewModel = function (items) {
+        this.results = ko.observableArray(items);
+        this.addResult = function (item) {
+            this.results.push(item);
+        }
+    };
+</script>
+
 <script type="text/javascript">
     var sd = {
+        viewModel: new SearchViewModel([{Title:"Please enter a search query."}]),
         search: function (query) {
             $.ajaxSetup({
                 accept: 'application/json'
@@ -36,26 +49,34 @@
             bindResults: function (data) {
                 $(".searchResults").empty();
                 $(data).each(function (index, el) {
-                    $(".searchResults").append("<li><div><div>" + el.Title + "</div><div>" + el.Description + "</div></div></li>");
+                    //$(".searchResults").append("<li><div><div>" + el.Title + "</div><div>" + el.Description + "</div></div></li>");
+                    sd.viewModel.addResult(el);
                 });
 
             }
         }
     };
+</script>
 
+<script type="text/javascript">
     $(document).ready(function () {
         // define template
-        $.template("result1", "<li>${ Title }</li>");
+        // $.template("result1", "<li>${ Title }</li>");
+        // TODO: do something with templates/
+
+        ko.applyBindings(sd.viewModel);
 
         // observe keyup on search control
-        var o = $("#searchQuery").keyupAsObservable();
+        var el = document.getElementById('searchQuery');
+        var o = Rx.Observable.fromEvent(el, "keyup").throttle(400);
+
         o.subscribe(function (ev) {
-            var q = ev.currentTarget.value;
+            var q = "";
+            if (ev.currentTarget) q = ev.currentTarget.value;
+            if (ev.target) q = ev.target.value;
             sd.search(q);
         });
     });
-
-
 </script>
 
 <h2>Sample Search control for V+E Intranet</h2>
@@ -66,15 +87,22 @@
             <span>VE Info:</span> <input type="text" id="searchQuery" /> <input type="button" value="Search" />
         </div>
         <div class="resultsContainer">
-            <ul class="searchResults" id="resultsList1">
+            <ul class="searchResults" id="resultsList1" data-bind="foreach: results">
                 <li>
-                    Result 1
-                </li>
-                <li>
-                    Result 2
-                </li>
-                <li>
-                    Result 3
+                    <div>
+                        <div  style="float:left; vertical-align:middle;">
+                            <img src="../../Content/photo.png" width="16px" height="16px" />
+                        </div>
+                        <div style="margin-left:15px;">
+                            <div>
+                                <span data-bind="text: $data.Title"></span>
+                                 - <span data-bind="text: $data.ElementType"></span>
+                            </div>
+                            <div>
+                                <span data-bind="text: $data.Description"></span>
+                            </div>
+                        </div>
+                    </div>
                 </li>
             </ul>
         </div>

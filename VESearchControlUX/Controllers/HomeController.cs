@@ -27,9 +27,9 @@ namespace VESearchControlUX.Controllers
                 return Json(elements);
             }
 
-            elements.AddRange(ElementProvider.Singleton.AllElements);
+            elements.AddRange(ElementProvider.Singleton.AllElements.Where(q => (q.Title.Contains(query.q) || q.Description.Contains(query.q))));
 
-            var queryResults = elements.Where(q => (q.Title.Contains(query.q) || q.Description.Contains(query.q))).ToList();
+            var queryResults = elements.ToList();
             //Thread.Sleep(1500); -- to simulate data access
             if (!queryResults.Any())
             {
